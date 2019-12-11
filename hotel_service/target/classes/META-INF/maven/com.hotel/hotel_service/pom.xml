@@ -7,7 +7,19 @@
 		<artifactId>hotel</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>hotel_entity</artifactId>
-	<name>hotel_entity</name>
+	<artifactId>hotel_service</artifactId>
+	<name>hotel_service</name>
 	<packaging>jar</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>com.hotel</groupId>
+			<artifactId>hotel_api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.hotel</groupId>
+			<artifactId>hotel_storage</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>
