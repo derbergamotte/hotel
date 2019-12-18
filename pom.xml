@@ -13,5 +13,6 @@
 		<module>hotel_service</module>
 		<module>hotel_storage</module>
 		<module>hotel_entity</module>
+		<module>hotel_facade</module>
 	</modules>
 </project>
