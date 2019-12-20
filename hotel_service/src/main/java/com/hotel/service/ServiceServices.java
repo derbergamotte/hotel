@@ -3,12 +3,16 @@ package com.hotel.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hotel.api.services.IServiceServices;
 import com.hotel.api.storage.IServiceDAO;
 import com.hotel.entities.Service;
 import com.hotel.storages.ServiceDAO;
 
 public class ServiceServices implements IServiceServices {
+	private static final Logger logger = LoggerFactory.getLogger(ServiceServices.class);
 	IServiceDAO serviceDAO = new ServiceDAO();
 
 	@Override
@@ -16,7 +20,7 @@ public class ServiceServices implements IServiceServices {
 		if (!serviceDAO.listAllServices().contains(service)) {
 			serviceDAO.addService(service);
 		}else {
-			System.out.println("This service is already exists");
+			logger.info("This service is already exists");
 		}
 	}
 
@@ -27,7 +31,7 @@ public class ServiceServices implements IServiceServices {
 
 	@Override
 	public List<String> listAllNameServices() {
-		return serviceDAO.listAllServices().stream().map(service -> service.getServiceName())
+		return serviceDAO.listAllServices().stream().map(Service::getServiceName)
 				.collect(Collectors.toList());
 	}
 

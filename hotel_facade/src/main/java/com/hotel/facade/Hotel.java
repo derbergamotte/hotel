@@ -4,6 +4,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hotel.api.services.IClientServices;
 import com.hotel.api.services.IInteractionServices;
 import com.hotel.api.services.IRoomServices;
@@ -18,6 +21,7 @@ import com.hotel.service.RoomServices;
 import com.hotel.service.ServiceServices;
 
 public class Hotel {
+	private static final Logger logger = LoggerFactory.getLogger(Hotel.class);
 	IClientServices clientService = new ClientServices();
 	IRoomServices roomService = new RoomServices();
 	IServiceServices serviceService = new ServiceServices();
@@ -78,7 +82,7 @@ public class Hotel {
 	}
 
 	public void addRoom(Room room) {
-		roomService.addRoom();
+		roomService.addRoom(room);
 	}
 
 	public void removeRoom(Room room) {
@@ -130,6 +134,19 @@ public class Hotel {
 	}
 
 	public void printPriceByClient(String string) {
-		System.out.println(interactionService.getPrice(clientService.getClientByName(string)));
+		String priceLogger = String.format("Price by %s is %s", string, interactionService.getPrice(clientService.getClientByName(string)));
+		logger.info(priceLogger);
+	}
+	public void printListEmptyRooms(Calendar date) {
+		String emptyRooms = interactionService.listEmptyRooms(roomService.listAllNumberRooms(), date).toString();
+		logger.info(emptyRooms);
+	}
+	public void printListEmptyRooms(Calendar firstDate, Calendar lastDate) {
+		String emptyRooms =  interactionService.listEmptyRooms(roomService.listAllNumberRooms(), firstDate, lastDate).toString();
+		logger.info(emptyRooms);
+	}
+	public void printRoomsAndPrice() {
+		String roomsAndPrice = roomService.mapRoomsAndPrice().toString();
+		logger.info(roomsAndPrice);
 	}
 }

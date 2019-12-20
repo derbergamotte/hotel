@@ -4,12 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hotel.api.services.IRoomServices;
 import com.hotel.api.storage.IRoomDAO;
 import com.hotel.entities.Room;
 import com.hotel.storages.RoomDAO;
 
 public class RoomServices implements IRoomServices {
+	private static final Logger logger = LoggerFactory.getLogger(RoomServices.class);
 	IRoomDAO roomDAO = new RoomDAO();
 
 	@Override
@@ -32,7 +36,7 @@ public class RoomServices implements IRoomServices {
 		if (!roomDAO.listAllRooms().contains(room)) {
 			roomDAO.addRoom(room);
 		} else {
-			System.out.println("This room is already exists");
+			logger.info("This room is already exists");
 		}
 	}
 
@@ -43,7 +47,7 @@ public class RoomServices implements IRoomServices {
 
 	@Override
 	public List<Integer> listAllNumberRooms() {
-		return roomDAO.listAllRooms().stream().map(room -> room.getRoomNumber()).collect(Collectors.toList());
+		return roomDAO.listAllRooms().stream().map(Room::getRoomNumber).collect(Collectors.toList());
 	}
 
 	@Override
@@ -59,7 +63,12 @@ public class RoomServices implements IRoomServices {
 
 	@Override
 	public void removeRoom(Room room) {
-		roomDAO.removeRoom(room);		
+		if (roomDAO.listAllRooms().contains(room)) {
+			roomDAO.removeRoom(room);	
+		} else {
+			logger.info("This room isn't exists");
+		}
+	
 	}
 
 }

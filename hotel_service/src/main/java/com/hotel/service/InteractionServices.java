@@ -2,9 +2,11 @@ package com.hotel.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hotel.api.services.IInteractionServices;
 import com.hotel.api.storage.IInteractionDAO;
@@ -15,6 +17,7 @@ import com.hotel.entities.Service;
 import com.hotel.storages.InteractionDAO;
 
 public class InteractionServices implements IInteractionServices { // Lasciate ogni speranza, voi ch’entrate
+	private static final Logger logger = LoggerFactory.getLogger(InteractionServices.class);
 	IInteractionDAO interactionDAO = new InteractionDAO();
 
 	@Override
@@ -27,12 +30,12 @@ public class InteractionServices implements IInteractionServices { // Lasciate o
 
 				interactionDAO.addInteraction(new Interaction(room, client, services, dateArrival, dateDeparture));
 			} else {
-				System.out.println("This room is occupaid by this date");
+				logger.info("This room is occupaid by this date");
 			}
 		} else if (client == null) {
-			System.out.println("This client isn't exists");
+			logger.info("This client isn't exists");
 		} else {
-			System.out.println("This room isn't exists");
+			logger.info("This room isn't exists");
 		}
 	}
 
@@ -69,13 +72,13 @@ public class InteractionServices implements IInteractionServices { // Lasciate o
 
 	@Override
 	public int getPrice(Client client) {
-		Interaction clientHistory = new Interaction();
+		Interaction clientHistory;
 		int price = 0;
 		clientHistory = interactionDAO.listAllInteractions().stream().filter(i -> i.getClient().equals(client))
 				.reduce((first, second) -> second).orElse(null);
 		if (clientHistory != null) {
 			price = (clientHistory.getRoom().getRoomPrice() + clientHistory.getServices().stream()
-					.map(service -> service.getServicePrice()).mapToInt(a -> a).sum())
+					.map(Service::getServicePrice).mapToInt(a -> a).sum())
 					* getDaysOfStay(clientHistory.getDateArrival(), clientHistory.getDateDeparture()).size();
 		}
 		return price;
@@ -89,7 +92,7 @@ public class InteractionServices implements IInteractionServices { // Lasciate o
 	}
 
 	private List<Calendar> getDaysOfStay(Calendar dateArrival, Calendar dateDeparture) {
-		Calendar date = new GregorianCalendar();
+		Calendar date;
 		date = (Calendar) dateArrival.clone();
 		List<Calendar> dates = new ArrayList<>();
 		do {
